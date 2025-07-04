@@ -11,7 +11,7 @@ I got the main parts working: the Docker container starts Gogs and noVNC, launch
 ## Platform & Workflow
 
 * **Machine:** M2 MacBook Air
-* **Environment:** Windsurf IDE with GitHub Copilot MCP integration
+* **Environment:** VS IDE with GitHub Copilot MCP integration
 * **Base OS:** Debian bookworm-slim (ARM64 compatible)
 * **Total Time:** \~10–15 hours
 
