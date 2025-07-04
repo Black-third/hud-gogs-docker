@@ -110,7 +110,7 @@ python3 /mock_login.py
 
 ---
 
-## What I Learned & Reflections
+## What I tried
 
 I started with the wrong approach — using `xdotool` for simulating mouse movements and clicking. It was completely unreliable in a headless container. Timing was off, elements shifted, and interactions failed randomly.
 
