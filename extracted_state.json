@@ -1,0 +1,15 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "Tadmin",
+      "email": "admin@example.com",
+      "activated": true,
+      "admin": true,
+      "repos": "0",
+      "created": "Jul 04, 2025"
+    }
+  ],
+  "repositories": [],
+  "issues": []
+}

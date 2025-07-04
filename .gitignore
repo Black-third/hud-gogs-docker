@@ -31,7 +31,7 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Extracted state files (optional - remove if you want to include sample data)
-gogs_state.json
-extracted_state.json
-backup*.json
+# Extracted state files (keep sample data)
+# gogs_state.json
+# extracted_state.json
+# backup*.json
