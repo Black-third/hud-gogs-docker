@@ -9,7 +9,7 @@ Containerized Gogs (self-hosted Git) with browser access and complete state extr
 docker build --platform=linux/amd64 -t engineer-submission .
 docker run --platform=linux/amd64 -p 6080:6080 -p 3000:3000 --name engineer-submission engineer-submission
 
-# Access after ~60 seconds:
+# Access after ~30 seconds:
 # http://localhost:3000 - Gogs web interface
 # http://localhost:6080 - Browser via noVNC
 ```
