@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     libgtk-3-0 libdbus-glib-1-2 libxt6 libxrender1 libxcomposite1 libxdamage1 libxrandr2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Create git user and group
+
 RUN groupadd --system git && \
     useradd --system --gid git --shell /bin/bash --home-dir /home/git git && \
     mkdir -p /home/git && \
@@ -23,7 +23,6 @@ RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 RUN pip install --no-cache-dir selenium requests beautifulsoup4
 
-# Download and extract Gogs instead of copying large binary
 RUN mkdir -p /gogs && \
     cd /gogs && \
     wget https://github.com/gogs/gogs/releases/download/v0.13.0/gogs_0.13.0_linux_amd64.tar.gz && \
@@ -34,7 +33,7 @@ RUN mkdir -p /gogs && \
 COPY gogs/custom /gogs/custom
 COPY novnc /novnc
 
-# Create necessary directories and set permissions
+
 RUN mkdir -p /gogs/custom/conf /gogs/data /gogs-repositories /gogs/log && \
     chown -R git:git /gogs /gogs-repositories
 
@@ -50,7 +49,7 @@ RUN chmod +x /start.sh /mock_login.py /extract_system_state.sh
 WORKDIR /gogs
 EXPOSE 6080 3000
 
-# Enhanced healthcheck that verifies Gogs is fully setup and ready
+
 HEALTHCHECK --interval=15s --timeout=10s --start-period=60s --retries=5 \
   CMD curl -fs http://localhost:3000/ && \
       test -f /gogs/data/gogs.db && \
