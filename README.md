@@ -18,12 +18,14 @@ docker run --platform=linux/amd64 -p 6080:6080 -p 3000:3000 --name engineer-subm
 
 ```bash
 # Mock admin login (browser automation)
+(The admin login automation is done through a browser running *inside the container*, viewable through noVNC. You can watch it live at http://localhost:6080.)
 docker exec engineer-submission python3 /mock_login.py
 
 # Complete state extraction (users, repos, code)
 docker exec engineer-submission /extract_system_state.sh
 
-# Optional: Create API token (runs automatically after login)
+# Optional: Create API token 
+(This is also done through a browser running *inside the container*, viewable through noVNC. You can watch it live at http://localhost:6080.)
 docker exec engineer-submission python3 /create_token.py
 ```
 
@@ -40,7 +42,7 @@ The extractor reads SQLite directly (API tokens are per-user limited), archives 
 
 ## Key Files
 
-- `mock_login.py` - Browser automation for admin login
+- `mock_login.py` - Browser automation for admin login 
 - `extract_system_state.sh` - Main extraction script  
 - `extract_complete_backup.py` - Extraction engine
 - `create_token.py` - API token creation (optional, works after login but extraction doesn't need it)
