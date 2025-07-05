@@ -62,9 +62,9 @@ The JSON contains users, repositories, issues, and base64-encoded Git repository
 
 Built this on M2 MacBook with Docker, GitHub Copilot, and VS Code over ~14 hours total.
 
-**Docker Setup (5 hours)**: Installing Gogs, noVNC, learning Docker containerization from scratch.
+**Docker Setup (3 hours)**: Installing Gogs, noVNC, learning Docker containerization from scratch.
 
-**Mock Login (5 hours)**: First tried cdotool for mouse movements and coordinates in the container - that failed miserably! Then switched to HTML web scraping with Selenium, which actually worked :)
+**Mock Login (3 hours)**: First tried cdotool for mouse movements and coordinates in the container - that failed miserably! Then switched to HTML web scraping with Selenium, which actually worked :)
 
 **State Extraction (8 hours)**: This was the real challenge. Tried multiple approaches:
 
