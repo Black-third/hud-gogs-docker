@@ -32,7 +32,7 @@ docker cp engineer-submission:/complete_backup.json ./complete_backup.json
 1. **Docker Image**: Built as `engineer-submission` tag, also available on GitHub repository
 2. **GitHub Repository**: [https://github.com/Black-third/hud-gogs-docker] - contains all source code and documentation
 3. **Code Description**: See above - Selenium automation + SQLite extraction approach
-4. **Workflow Description**: See above - 18 hours on M2 MacBook with VS Code/Copilot
+4. **Workflow Description**: See above - 14 hours on M2 MacBook with VS Code/Copilot
 5. **Run Instructions**: See above - simple docker build/run commands
 
 ## Assignment Requirements Met
