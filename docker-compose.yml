@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  gogs:
+    build: .
+    ports:
+      - "3000:3000"
+      - "6080:6080"
+    volumes:
+      - gogs_data:/gogs/data
+      - gogs_repos:/gogs-repositories
+    environment:
+      - DISPLAY=:99
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  gogs_data:
+  gogs_repos:

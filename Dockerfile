@@ -33,13 +33,19 @@ RUN mkdir -p /gogs/custom/conf /gogs/data /gogs-repositories /gogs/log && \
 COPY start.sh /start.sh
 COPY mock_install.py /mock_install.py
 COPY mock_login.py /mock_login.py
-COPY extract_state.py /extract_state.py
-RUN chmod +x /start.sh /mock_login.py
+COPY create_token.py /create_token.py
+COPY extract_complete_backup.py /extract_complete_backup.py
+COPY extract_system_state.sh /extract_system_state.sh
+COPY requirements.txt /requirements.txt
+RUN chmod +x /start.sh /mock_login.py /extract_system_state.sh
 
 WORKDIR /gogs
 EXPOSE 6080 3000
 
-HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
-  CMD curl -fs http://localhost:3000/ || exit 1
+# Enhanced healthcheck that verifies Gogs is fully setup and ready
+HEALTHCHECK --interval=15s --timeout=10s --start-period=60s --retries=5 \
+  CMD curl -fs http://localhost:3000/ && \
+      test -f /gogs/data/gogs.db && \
+      pgrep -f "gogs web" > /dev/null || exit 1
 
 CMD ["/start.sh"]

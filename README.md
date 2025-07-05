@@ -1,135 +1,79 @@
-# HUD Research Engineering Take-Home: Gogs Docker Container
+# Gogs Docker Container
 
-## Overview (From Me, Honestly)
+Containerized Gogs (self-hosted Git) with browser access and complete state extraction.
 
-This take-home was a deep dive into Docker, automation, and web scraping using Gogs (a lightweight GitHub alternative). The goal was to build a Docker image that spins up Gogs and a browser-accessible desktop UI via noVNC, auto-configures everything internally, and enables extracting Gogs system state — with no external networking or Docker volumes.
-
-I got the main parts working: the Docker container starts Gogs and noVNC, launches Firefox, creates an admin user, and extracts system state using a combination of browser automation and scraping. I even automated the creation of an API token — but unfortunately, I couldn't make effective use of it.
-
----
-
-## Platform & Workflow
-
-* **Machine:** M2 MacBook Air
-* **Environment:** VS IDE with GitHub Copilot MCP integration
-* **Base OS:** Debian bookworm-slim (ARM64 compatible)
-* **Total Time:** \~10–15 hours
-
-### My Timeline
-
-* **Step 1 (Base setup + Gogs + noVNC):** 3 hours
-* **Step 2 (Automation: browser + admin login):** 2 hours
-* **Step 3 (Extraction via scraping + limited API):** 3–5 hours
-* **Bonus (Tried restoration via upload + API auth attempts):** \~2–5 hours (eventually removed this part)
-
----
-
-## Project Breakdown
-
-### ✅ What Works
-
-* Gogs runs inside the container with no volume or external network dependencies
-* noVNC provides access to a remote desktop at `http://localhost:6080`
-* Firefox browser auto-launches
-* `mock_install.py` sets up Gogs automatically (successfully automated full installation)
-* `mock_login.py` logs in and generates an API token for the admin user (confirmed creation and saved the token)
-* `extract_state.py` scrapes HTML from Gogs admin pages and uses limited API endpoints to extract users, repos, and issues as JSON
-
-### ❌ What Didn’t Work / Was Removed
-
-* I wrote an initial `upload_state.py` as a trial for round-trip restoration, but it never worked as intended. I eventually removed it to focus on the core requirements.
-* Gogs API admin endpoints (like `/api/v1`) returned 404s — I couldn’t get them to work and suspect I didn’t fully understand the token-based auth flow.
-* Git repo content restoration was not attempted
-* Initial automation using `xdotool` and coordinate-based clicking was completely unreliable
-
----
-
-## Files & Scripts
-
-```
-├── Dockerfile              # Defines full build process (multi-platform)
-├── start.sh                # Launches Gogs + noVNC
-├── mock_install.py         # Automates Gogs setup via Selenium
-├── mock_login.py           # Logs in and generates API token
-├── extract_state.py        # Extracts users/repos/issues as JSON
-├── gogs/                   # Gogs binary (0.13.3)
-├── novnc/                  # noVNC web client
-└── README.md               # This honest description
-```
-
----
-
-## How to Build & Run
-
-### On M1/M2/M3 Mac (ARM64):
+## Quick Start
 
 ```bash
-# Build for AMD64 compatibility
+# Build and run
 docker build --platform=linux/amd64 -t engineer-submission .
-
-# Clean previous containers
-docker rm -f $(docker ps -aq)
-
-# Run the container
 docker run --platform=linux/amd64 -p 6080:6080 -p 3000:3000 --name engineer-submission engineer-submission
+
+# Access after ~60 seconds:
+# http://localhost:3000 - Gogs web interface
+# http://localhost:6080 - Browser via noVNC
 ```
 
-### On AMD64 Machines:
+## Assignment Features
 
 ```bash
-docker build -t engineer-submission .
-docker run -p 6080:6080 --network none --name engineer-submission engineer-submission
+# Mock admin login (browser automation)
+docker exec engineer-submission python3 /mock_login.py
+
+# Complete state extraction (users, repos, code)
+docker exec engineer-submission /extract_system_state.sh
+
+# Optional: Create API token (runs automatically after login)
+docker exec engineer-submission python3 /create_token.py
 ```
 
----
+## What It Does
 
-## Access Points
+✅ **Core**: Gogs starts automatically in container  
+✅ **Core**: Browser access via noVNC  
+✅ **Core**: Mock admin login automation  
+✅ **Bonus**: Complete backup extraction including actual Git code
 
-* **noVNC Desktop UI:** [http://localhost:6080](http://localhost:6080)
-* **Gogs Web Interface:** [http://localhost:3000](http://localhost:3000) (inside the container)
-* **Admin Credentials:** Username: `Tadmin`, Password: `admin123`
+## How It Works
 
----
+The extractor reads SQLite directly (API tokens are per-user limited), archives Git repos as tar.gz, and outputs everything as base64-encoded JSON.
 
-## Executables & Commands
+## Key Files
 
-### 1. Extract Gogs State (Works , kinda? I guess we need gogs API for that as well :()
+- `mock_login.py` - Browser automation for admin login
+- `extract_system_state.sh` - Main extraction script  
+- `extract_complete_backup.py` - Extraction engine
+- `create_token.py` - API token creation (optional, works after login but extraction doesn't need it)
+
+## Getting the Backup File
+
+After extraction, copy the JSON file to your project folder to read it in VS Code:
 
 ```bash
-docker exec engineer-submission python3 /extract_state.py
-docker exec engineer-submission cat /gogs_state.json
-docker cp engineer-submission:/gogs_state.json ./extracted_state.json
+# Copy backup file to current directory
+docker cp engineer-submission:/complete_backup.json ./complete_backup.json
+
+# Now you can open it in VS Code to see all the extracted data
 ```
 
-### 2. Re-run Gogs Login Script (it already runs in start.sh)
+The JSON contains users, repositories, issues, and base64-encoded Git repository archives.
 
-```bash
-docker exec -it engineer-submission sh
-python3 /mock_login.py
-```
+## Development Journey
 
----
+Built this on M2 MacBook with Docker, GitHub Copilot, and VS Code over ~18 hours total.
 
-## What I tried
+**Docker Setup (5 hours)**: Installing Gogs, noVNC, learning Docker containerization from scratch.
 
-I started with the wrong approach — using `xdotool` for simulating mouse movements and clicking. It was completely unreliable in a headless container. Timing was off, elements shifted, and interactions failed randomly.
+**Mock Login (5 hours)**: First tried cdotool for mouse movements and coordinates in the container - that failed miserably! Then switched to HTML web scraping with Selenium, which actually worked :)
 
-Switching to Selenium with direct HTML element interaction was the breakthrough. I used explicit waits and interacted with elements via their IDs and classes. This made setup and login much more reliable.
+**State Extraction (8 hours)**: This was the real challenge. Tried multiple approaches:
 
-I successfully automated the creation of an API token and saved it as a string. I couldn't hit some basic endpoints like:
+1. **Web scraping**: Visited pages like `/admin/users` after login to scrape HTML content. It worked but was messy - had to parse HTML and extract each piece of info for users, repos, issues, etc.
 
-* `/api/v1/user`
-* `/api/v1/user/repos`
-* `/api/v1/repos/{owner}/{repo}/issues`
+2. **API approach**: Built a mock login system to create API tokens automatically as admin, then used API commands. Problem was the API only returned data for the current user, not all users. Some endpoints didn't work at all.
 
-I believe this was due to not understanding the required authentication flow, not a fault in the API itself.
+3. **Direct database**: Finally went with SQLite database extraction - turned out to be the cleanest approach! Direct access to all data without API limitations.
 
-I initially attempted round-trip restoration by writing an `upload_state.py`, but it never worked properly. Eventually I decided to remove it and focus on delivering the parts I got right.
+**Restore attempts**: Tried to write code for uploading and restoring state but couldn't get it reliable. Service restarts were flaky. Need to learn more about that.
 
----
-
-## Final Thoughts
-
-Despite the hurdles, I really enjoyed this challenge. It pushed me to combine Docker, web automation, and creative workarounds when things didn’t work. I now have a deeper appreciation for headless environments, Selenium, and how to debug flaky setups.
-
-There’s room to improve this, but I feel good about what I got done — and learned a lot in the process. Maybe next time I’ll get the full round-trip working. :)
+Lots of details and challenges, but glad I finished! Thanks god :)

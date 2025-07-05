@@ -1,4 +1,14 @@
-# Python
+# 🚫 Gogs Docker Project - Git Ignore
+
+# Generated backup files (ignore - created by extraction scripts)
+extracted_state*.json
+complete_backup.json
+complete_backup.tar.gz
+
+# Generated tokens (ignore - created by create_token.py)
+api_token.txt
+
+# Python cache
 __pycache__/
 *.py[cod]
 *$py.class
