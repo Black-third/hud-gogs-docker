@@ -23,7 +23,15 @@ RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 RUN pip install --no-cache-dir selenium requests beautifulsoup4
 
-COPY gogs /gogs
+# Download and extract Gogs instead of copying large binary
+RUN mkdir -p /gogs && \
+    cd /gogs && \
+    wget https://github.com/gogs/gogs/releases/download/v0.13.0/gogs_0.13.0_linux_amd64.tar.gz && \
+    tar -xzf gogs_0.13.0_linux_amd64.tar.gz --strip-components=1 && \
+    rm gogs_0.13.0_linux_amd64.tar.gz && \
+    chmod +x gogs
+
+COPY gogs/custom /gogs/custom
 COPY novnc /novnc
 
 # Create necessary directories and set permissions

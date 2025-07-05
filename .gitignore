@@ -1,5 +1,8 @@
 # 🚫 Gogs Docker Project - Git Ignore
 
+# Large binary files (downloaded during Docker build)
+gogs/gogs
+
 # Generated backup files (ignore - created by extraction scripts)
 extracted_state*.json
 complete_backup.json
