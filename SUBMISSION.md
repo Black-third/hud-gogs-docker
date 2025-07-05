@@ -6,7 +6,7 @@ This project containerizes Gogs (self-hosted Git service) with noVNC browser acc
 
 ## Workflow Description
 
-I developed this on my M2 MacBook using VS Code with GitHub Copilot over approximately 18 hours total. **Step 1 (Docker setup, 5 hours)**: Installing and configuring Gogs, noVNC, and learning Docker containerization from scratch. **Step 2 (Mock login, 5 hours)**: Initially attempted cdotool for mouse automation which failed completely, then successfully implemented Selenium-based browser automation for form submission. **Step 3 (State extraction, 8 hours)**: Started with HTML web scraping approach, then tried API-based extraction with automated token creation, but ultimately settled on direct SQLite database access as the most robust solution. I attempted but wasn't able to finish a reliable restore mechanism due to service restart complexities.
+I developed this on my M2 MacBook using VS Code with GitHub Copilot over approximately 18 hours total. **Step 1 (Docker setup, 3 hours)**: Installing and configuring Gogs, noVNC, and learning Docker containerization from scratch. **Step 2 (Mock login, 3 hours)**: Initially attempted cdotool for mouse automation which failed completely, then successfully implemented Selenium-based browser automation for form submission. **Step 3 (State extraction, 8 hours)**: Started with HTML web scraping approach, then tried API-based extraction with automated token creation, but ultimately settled on direct SQLite database access as the most robust solution. I attempted but wasn't able to finish a reliable restore mechanism due to service restart complexities.
 
 ## How to Run
 
