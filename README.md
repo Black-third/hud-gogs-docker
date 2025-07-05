@@ -60,7 +60,7 @@ The JSON contains users, repositories, issues, and base64-encoded Git repository
 
 ## Development Journey
 
-Built this on M2 MacBook with Docker, GitHub Copilot, and VS Code over ~18 hours total.
+Built this on M2 MacBook with Docker, GitHub Copilot, and VS Code over ~12 hours total.
 
 **Docker Setup (5 hours)**: Installing Gogs, noVNC, learning Docker containerization from scratch.
 
