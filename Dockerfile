@@ -23,15 +23,19 @@ RUN python3 -m venv /venv
 ENV PATH="/venv/bin:$PATH"
 RUN pip install --no-cache-dir selenium requests beautifulsoup4
 
-RUN mkdir -p /gogs && \
-    cd /gogs && \
-    wget https://github.com/gogs/gogs/releases/download/v0.13.0/gogs_0.13.0_linux_amd64.tar.gz && \
-    tar -xzf gogs_0.13.0_linux_amd64.tar.gz --strip-components=1 && \
-    rm gogs_0.13.0_linux_amd64.tar.gz && \
-    chmod +x gogs
+# Download Gogs
+RUN wget https://github.com/gogs/gogs/releases/download/v0.13.0/gogs_0.13.0_linux_amd64.tar.gz \
+    && tar -xzf gogs_0.13.0_linux_amd64.tar.gz \
+    && rm gogs_0.13.0_linux_amd64.tar.gz
 
+# Download noVNC (version 1.6)
+RUN wget https://github.com/novnc/noVNC/archive/v1.6.0.tar.gz \
+    && tar -xzf v1.6.0.tar.gz \
+    && mv noVNC-1.6.0 /novnc \
+    && rm v1.6.0.tar.gz
+
+# Copy custom Gogs configuration
 COPY gogs/custom /gogs/custom
-COPY novnc /novnc
 
 
 RUN mkdir -p /gogs/custom/conf /gogs/data /gogs-repositories /gogs/log && \
@@ -52,6 +56,7 @@ EXPOSE 6080 3000
 
 HEALTHCHECK --interval=15s --timeout=10s --start-period=60s --retries=5 \
   CMD curl -fs http://localhost:3000/ && \
+      curl -fs http://localhost:3000/api/v1/version && \
       test -f /gogs/data/gogs.db && \
       pgrep -f "gogs web" > /dev/null || exit 1
 
