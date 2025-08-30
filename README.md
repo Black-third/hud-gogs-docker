@@ -77,5 +77,3 @@ Built this on M2 MacBook with Docker, GitHub Copilot, and VS Code over ~14 hours
 3. **Direct database**: Finally went with SQLite database extraction - turned out to be the cleanest approach! Direct access to all data without API limitations.
 
 **Restore attempts**: Tried to write code for uploading and restoring state but couldn't get it reliable. Service restarts were flaky. Need to learn more about that.
-
-Lots of details and challenges (No math tho... honestly, the biggest betrayal 😔), but glad I finished! Thanks god :)
